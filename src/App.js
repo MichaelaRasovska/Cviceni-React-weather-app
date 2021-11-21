@@ -1,7 +1,25 @@
-import React from "react";
-import "./App.css";
+import React, { useEffect, useState } from 'react';
+import './App.css';
+
+const appID = process.env.REACT_APP_MY_API_ID;
 
 const App = () => {
+  const city = 'London';
+
+  const [weather, setWeather] = useState(null);
+
+  useEffect(() => {
+    fetch(
+      `https://api.openweathermap.org/data/2.5/weather?q=${city}&units=metric&APPID=${appID}`,
+    )
+      .then((response) => response.json())
+      .then((json) => {
+        setWeather(json);
+      });
+  }, []);
+
+  console.log(weather);
+
   return (
     <div className="App">
       <div className="container">
@@ -19,7 +37,7 @@ const App = () => {
             <div className="weather__inner weather__inner--center">
               <div className="weather__section weather__section--temp">
                 <span className="weather__temp-value" id="teplota">
-                  --
+                  {weather ? Math.round(weather.main.temp) : 'neni'}
                 </span>
                 <span className="weather__temp-unit">°C</span>
                 <div className="weather__description" id="popis">
@@ -31,10 +49,14 @@ const App = () => {
                 id="ikona"
               >
                 --
-                {/* <img
-                  src={URL FROM OPEN WEATHER}
+                <img
+                  src={
+                    weather
+                      ? `http://openweathermap.org/img/wn/${weather.weather[0].icon}@2x.png`
+                      : 'nic'
+                  }
                   alt="current weather icon"
-                /> */}
+                />
               </div>
             </div>
             <div className="weather__inner">
@@ -55,28 +77,32 @@ const App = () => {
               <div className="weather__section">
                 <h3 className="weather__title">Sunrise</h3>
                 <div className="weather__value">
-                  <span id="sunrise">--</span>
+                  <span id="sunrise">
+                    {weather ? Date(weather.sys.sunrise) : 'null'}
+                  </span>
                 </div>
               </div>
               <div className="weather__section">
                 <h3 className="weather__title">Sunset</h3>
                 <div className="weather__value">
-                  <span id="sunset">--</span>
+                  <span id="sunset">
+                    {weather ? Date(weather.sys.sunset) : 'null'}
+                  </span>
                 </div>
               </div>
             </div>
           </div>
-          <div class="weather__forecast" id="predpoved">
-            <div class="forecast">
-              <div class="forecast__day">Day, date</div>
-              <div class="forecast__icon">
+          <div className="weather__forecast" id="predpoved">
+            <div className="forecast">
+              <div className="forecast__day">Day, date</div>
+              <div className="forecast__icon">
                 {/* <img
                   src={URL FROM OPEN WEATHER}
                   style={{ height: "100%" }}
                   alt="current weather icon"
                 /> */}
               </div>
-              <div class="forecast__temp">-- °C</div>
+              <div className="forecast__temp">-- °C</div>
             </div>
           </div>
         </div>
